@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "pokedesk",
-    "slug": "pokedesk",
+    "name": "pokedex",
+    "slug": "pokedex",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "pokedesk",
+    "scheme": "pokedex",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
