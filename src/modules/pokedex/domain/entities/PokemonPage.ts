@@ -1,4 +1,4 @@
-import { PokemonListItem } from "./PokemonListItem";
+import { PokemonListItem } from "@/modules/pokedex/domain/entities/PokemonListItem";
 
 export interface PokemonPage {
   total: number;
