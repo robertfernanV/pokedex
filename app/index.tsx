@@ -1,4 +1,5 @@
-import { registerRootComponent } from "expo";
-import App from "./modules/pokedex/presentation/App";
+import App from "@presentation/App";
 
-registerRootComponent(App);
+export default function Index() {
+  return <App />;
+}
