@@ -1,28 +1,38 @@
-import { PokemonPage } from "@/modules/pokedex/domain/entities/PokemonPage";
-import { PokeApiPokemonResponseDTO } from "@/modules/pokedex/infrastructure/dtos/PokeApiPokemonResponseDTO";
 import { PokemonDetail } from "@domain/entities/PokemonDetail";
+import { PokemonPage } from "@domain/entities/PokemonPage";
 import { PokemonRepository } from "@domain/repositories/PokemonRepository";
 import { axiosClient } from "@infrastructure/api/axiosClient";
+import { PokeApiPokemonDetailDTO } from "@infrastructure/dtos/PokeApiPokemonDetailDTO";
+import { PokeApiPokemonResponseDTO } from "@infrastructure/dtos/PokeApiPokemonResponseDTO";
+import { PokeApiPokemonDetailMapper } from "@infrastructure/mappers/PokeApiPokemonDetailMapper";
+import { PokeApiPokemonMapper } from "@infrastructure/mappers/PokeApiPokemonMapper";
 
 export class PokeApiPokemonRepository implements PokemonRepository {
-  getPokemon(limit: number, offset: number): Promise<PokemonPage> {
-    throw new Error("Method not implemented.");
-  }
   async getPokemons(limit: number, offset: number): Promise<PokemonPage> {
-    const response = axiosClient.get<PokeApiPokemonResponseDTO>(`/pokemon`, {
-      params: {
-        limit,
-        offset,
+    const response = await axiosClient.get<PokeApiPokemonResponseDTO>(
+      "/pokemon",
+      {
+        params: { limit, offset },
       },
-    });
+    );
+
+    const { count, next, previous, results } = response.data;
+
     return {
-      total: 0,
-      nextOffset: 20,
-      previousOffset: 0,
-      items: [],
+      total: count,
+      nextOffset: PokeApiPokemonMapper.extractOffsetFromUrl(next),
+      previousOffset: PokeApiPokemonMapper.extractOffsetFromUrl(previous),
+      items: results.map((result) =>
+        PokeApiPokemonMapper.toPokemonListItem(result),
+      ),
     };
   }
-  getPokemonDetail(idOrName: string): Promise<PokemonDetail> {
-    throw new Error("Method not implemented.");
+
+  async getPokemonDetail(idOrName: string): Promise<PokemonDetail> {
+    const response = await axiosClient.get<PokeApiPokemonDetailDTO>(
+      `/pokemon/${idOrName}`,
+    );
+
+    return PokeApiPokemonDetailMapper.toPokemonDetail(response.data);
   }
 }
